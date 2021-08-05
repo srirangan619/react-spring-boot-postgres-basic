@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import { GlobalState } from '../../../../GlobalState'
+import { useHistory } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const initialState = {
     id: "",
@@ -11,31 +13,55 @@ const initialState = {
     serial_number: ""
 }
 
+const initialStateTenant = {
+    id: "",
+    name: "",
+    description: "",
+    address: "",
+    devices: []
+}
+
 
 function DeviceForm() {
     const state = useContext(GlobalState)
     const [device, setDevice] = useState(initialState)
+    const [tenant, setTenant] = useState(initialStateTenant)
     const [onEdit, setOnEdit] = useState(false)
+    const [id, setID] = useState(0)
 
     const param = useParams()
     const [tenants] = state.tenantsManagerAPI.tenants
     const [callBack, setCallBack] = state.tenantsManagerAPI.callBack
 
+    const history = useHistory();
+
     useEffect(() => {
+        
         if (param.id) {
             setOnEdit(true)
             tenants.forEach(tenant => {
-                tenant.Devices.forEach(device =>{
-                    if (device.id === param.id) {
+                tenant.devices.forEach(device => {
+                    if (device.id === Number(param.id)) {
                         setDevice(device)
+                        setID(tenant.id)
                     }
                 })
             })
+        } else if (param.tid) {
+            tenants.forEach(tenant => {
+                if (tenant.id === Number(param.tid)) {
+                    // console.log("tenant", tenant)
+                    setTenant(tenant)
+
+                    setID(tenant.id)
+                }
+            })
+
         } else {
             setOnEdit(false)
             setDevice(initialState)
         }
-    }, [param.id, tenants])
+    }, [param, tenants])
 
     const handleChangeInput = e => {
         const { name, value } = e.target
@@ -46,14 +72,20 @@ function DeviceForm() {
         e.preventDefault()
         try {
             if (onEdit) {
-                // await axios.put(`api/tenants/${tenant.id}`, {...device})
+                axios.put(`/device/${device.id}`, { device })
             } else {
-                // await axios.post('api/tenants', {...device})
+                // console.log("before tenants", tenant)
+                // console.log("devices", device)
+                tenant.devices.push(device)
+                // console.log("after tenants", tenant)
+                axios.put(`/tenant/${id}`, { tenant })
             }
 
             //console.log("sent successfull",tenant)
             setDevice(initialState)
             setCallBack(!callBack)
+
+            history.push(`/detail/${id}`);
 
         } catch (err) {
             alert(err.response.data.msg)
@@ -63,7 +95,7 @@ function DeviceForm() {
 
 
     return (
-        <div>
+        <div className="main-form">
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Name</label>
@@ -89,7 +121,12 @@ function DeviceForm() {
                         value={device.serial_number} onChange={handleChangeInput} />
                 </div>
 
-                <button type="submit">{onEdit? 'Update' : 'Add'}</button>
+                <div>
+                    <Link to={`/detail/${id}`}>
+                        <Button className="right" variant="outline-dark">{onEdit ? 'Cancel' : 'Back'}</Button>
+                    </Link>
+                    <Button className="right" variant="outline-success" type="submit">{onEdit ? 'Update' : 'Create'}</Button>
+                </div>
             </form>
         </div>
     )

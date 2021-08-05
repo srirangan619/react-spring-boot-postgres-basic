@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { GlobalState } from '../../../GlobalState'
-import GridView from '../utils/gridView/GridView'
+import axios from 'axios'
+import './landing.css';
 import { Link } from 'react-router-dom'
 import Button from "react-bootstrap/Button";
 import Table from 'react-bootstrap/Table'
+import Container from 'react-bootstrap/Container'
 
 
 function LandingPage() {
@@ -11,10 +13,11 @@ function LandingPage() {
     const [tenants] = state.tenantsManagerAPI.tenants
     const [callBack, setCallBack] = state.tenantsManagerAPI.callBack
 
-    const deleteTenant = async () => {
+    const deleteTenant = (e) =>{
         try {
-            console.log("delete working")
-            // await axios.delete(`/api/tenant/${props.id}`)
+            // console.log("f",e.target.id);
+            // console.log("s",e.currentTarget.id);
+            axios.delete(`/tenant/${e.currentTarget.id}`)
             setCallBack(!callBack)
         } catch (err) {
             alert(err.response.data.msg)
@@ -23,19 +26,22 @@ function LandingPage() {
 
 
     return (
-        <div>
-            <h1>Landing page</h1>
+        <Container>
+            <h1>Welcome</h1>
+            <div className="spacing">
             <Link to="/create_tenant">
-                <Button variant="success" size="lg">Add New Tenant</Button>
+                <Button variant="success" size="lg">ADD NEW TENANT</Button>
             </Link>
-            <div>
+            </div>
+            
+            <div className="center">
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Address</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,9 +53,9 @@ function LandingPage() {
                                     <td>{tenant.description}</td>
                                     <td>{tenant.address}</td>
                                     <td>
-                                        <span><Link to={`/detail/${tenant.id}`}><Button>View</Button></Link></span>
-                                        <span><Link to={`/edit_tenant/${tenant.id}`}><Button>Edit</Button></Link></span>
-                                        <span><Link to="#!" onClick={deleteTenant}><Button>Delete</Button></Link></span>
+                                        <span className="right"><Link to={`/detail/${tenant.id}`}><Button variant="primary">View</Button></Link></span>
+                                        <span className="right"><Link to={`/tenant/${tenant.id}`}><Button variant="secondary">Edit</Button></Link></span>
+                                        <span className="right"><Link to="" id={tenant.id} onClick={deleteTenant}><Button variant="danger">Delete</Button></Link></span>
                                     </td>
                                 </tr>
                             )
@@ -58,7 +64,7 @@ function LandingPage() {
                     </tbody>
                 </Table>
             </div>
-        </div>
+        </Container>
     )
 }
 

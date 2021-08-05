@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import { GlobalState } from '../../../../GlobalState'
+import { useHistory } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const initialState = {
     id: "",
     name: "",
     description: "",
     address: "",
-    Devices: []
+    devices: []
 }
 
 
@@ -21,11 +23,13 @@ function TenantForm() {
     const [tenants] = state.tenantsManagerAPI.tenants
     const [callBack, setCallBack] = state.tenantsManagerAPI.callBack
 
+    const history = useHistory();
+
     useEffect(() => {
         if (param.id) {
             setOnEdit(true)
             tenants.forEach(tenant => {
-                if (tenant.id === param.id) {
+                if (tenant.id === Number(param.id)) {
                     setTenant(tenant)
                 }
             })
@@ -44,14 +48,15 @@ function TenantForm() {
         e.preventDefault()
         try {
             if (onEdit) {
-                // await axios.put(`/tenants/${tenant.id}`, {...tenant})
+                axios.put(`/tenant/${tenant.id}`, { tenant })
             } else {
-                // await axios.post('/tenants', {...tenant})
+                axios.post('/create_tenant', { tenant })
             }
 
             //console.log("sent successfull",tenant)
             setTenant(initialState)
             setCallBack(!callBack)
+            history.push("/");
 
         } catch (err) {
             alert(err.response.data.msg)
@@ -61,7 +66,7 @@ function TenantForm() {
 
 
     return (
-        <div>
+        <div className="main-form">
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="name">Name</label>
@@ -81,7 +86,12 @@ function TenantForm() {
                         value={tenant.address} onChange={handleChangeInput} />
                 </div>
 
-                <button type="submit">{onEdit? 'Update' : 'Create'}</button>
+                <div>
+                    <Link to="/">
+                        <Button className="right" variant="outline-dark">{onEdit ? 'Cancel' : 'Back'}</Button>
+                    </Link>
+                    <Button className="right" variant="outline-success" type="submit">{onEdit ? 'Update' : 'Create'}</Button>
+                </div>
             </form>
         </div>
     )
