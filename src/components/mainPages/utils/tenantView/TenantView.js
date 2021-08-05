@@ -79,7 +79,7 @@ function TenantView() {
                                             <td>
                                                 {/* <span className="right"><Link to={`/detail/${device.id}`}><Button variant="primary">View</Button></Link></span> */}
                                                 <span className="right"><Link to={`/device/${device.id}`}><Button variant="secondary">Edit</Button></Link></span>
-                                                <span className="right"><Link to="" id={device.id} onClick={deleteDevice}><Button variant="danger">Delete</Button></Link></span>
+                                                <span className="right"><Button id={device.id} onClick={deleteDevice} variant="danger">Delete</Button></span>
                                             </td>
                                         </tr>
                                     )

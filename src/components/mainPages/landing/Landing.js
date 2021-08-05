@@ -55,7 +55,7 @@ function LandingPage() {
                                     <td>
                                         <span className="right"><Link to={`/detail/${tenant.id}`}><Button variant="primary">View</Button></Link></span>
                                         <span className="right"><Link to={`/tenant/${tenant.id}`}><Button variant="secondary">Edit</Button></Link></span>
-                                        <span className="right"><Link to="" id={tenant.id} onClick={deleteTenant}><Button variant="danger">Delete</Button></Link></span>
+                                        <span className="right"><Button id={tenant.id} onClick={deleteTenant} variant="danger">Delete</Button></span>
                                     </td>
                                 </tr>
                             )
