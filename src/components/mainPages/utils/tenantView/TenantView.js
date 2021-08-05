@@ -28,11 +28,11 @@ function TenantView() {
     }, [params.id, tenants])
 
     // console.log("out",detailTenant)
-    const deleteDevice = (e) => {
+    const deleteDevice =  async(e) => {
         try {
             // console.log("f",e.target.id);
             // console.log("s",e.currentTarget.id);
-            axios.delete(`/device/${e.currentTarget.id}`)
+            await axios.delete(`/device/${e.currentTarget.id}`)
             setCallBack(!callBack)
         } catch (err) {
             alert(err.response.data.msg)

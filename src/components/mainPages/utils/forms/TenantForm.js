@@ -44,13 +44,13 @@ function TenantForm() {
         setTenant({ ...tenant, [name]: value })
     }
 
-    const handleSubmit = e => {
+    const handleSubmit =  async(e) => {
         e.preventDefault()
         try {
             if (onEdit) {
-                axios.put(`/tenant/${tenant.id}`, { tenant })
+                await axios.put(`/tenant/${tenant.id}`, { tenant })
             } else {
-                axios.post('/create_tenant', { tenant })
+                await axios.post('/create_tenant', { tenant })
             }
 
             //console.log("sent successfull",tenant)

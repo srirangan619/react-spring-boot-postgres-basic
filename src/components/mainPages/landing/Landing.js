@@ -13,11 +13,11 @@ function LandingPage() {
     const [tenants] = state.tenantsManagerAPI.tenants
     const [callBack, setCallBack] = state.tenantsManagerAPI.callBack
 
-    const deleteTenant = (e) =>{
+    const deleteTenant = async (e) =>{
         try {
             // console.log("f",e.target.id);
             // console.log("s",e.currentTarget.id);
-            axios.delete(`/tenant/${e.currentTarget.id}`)
+            await axios.delete(`/tenant/${e.currentTarget.id}`)
             setCallBack(!callBack)
         } catch (err) {
             alert(err.response.data.msg)

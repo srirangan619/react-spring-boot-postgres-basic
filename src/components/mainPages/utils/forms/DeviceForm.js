@@ -68,17 +68,17 @@ function DeviceForm() {
         setDevice({ ...device, [name]: value })
     }
 
-    const handleSubmit = e => {
+    const handleSubmit =  async (e) => {
         e.preventDefault()
         try {
             if (onEdit) {
-                axios.put(`/device/${device.id}`, { device })
+                await axios.put(`/device/${device.id}`, { device })
             } else {
                 // console.log("before tenants", tenant)
                 // console.log("devices", device)
                 tenant.devices.push(device)
                 // console.log("after tenants", tenant)
-                axios.put(`/tenant/${id}`, { tenant })
+                await axios.put(`/tenant/${id}`, { tenant })
             }
 
             //console.log("sent successfull",tenant)
