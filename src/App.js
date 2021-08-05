@@ -1,9 +1,17 @@
+import { DataProvider } from './GlobalState'
+import { BrowserRouter } from 'react-router-dom'
+import MainPages from './components/mainPages/Pages'
+
 
 function App() {
   return (
-    <div className="App">
-     Hello world
-    </div>
+    <DataProvider>
+      <BrowserRouter>
+        <div className="App">
+          <MainPages />
+        </div>
+      </BrowserRouter>
+    </DataProvider>
   );
 }
 
